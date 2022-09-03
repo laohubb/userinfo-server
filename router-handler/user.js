@@ -1,28 +1,28 @@
-const db=require('../db/index')
+const db = require('../db/index')
 const bcrypt = require('bcryptjs')
 
 
 exports.regUser = (req, res) => {
-    const userinfo=req.body
+    const userinfo = req.body
 
-   const sqlStr='select * from user where username=?'
+    const sqlStr = 'select * from user where username=?'
 
-    db.query(sqlStr,userinfo.username,(err,results)=>{
-        if(err){
+    db.query(sqlStr, userinfo.username, (err, results) => {
+        if (err) {
             return res.send(err)
         }
         if (results.length > 0) {
             return res.cc('用户名被占用，请更换其他用户名！')
         }
 
-        userinfo.password=bcrypt.hashSync(userinfo.password,10)
-        const sqlInsert='insert into user set ?'
-        db.query(sqlInsert,{username:userinfo.username,password:userinfo.password},(err,results)=>{
-            if(err) return res.cc(err)
+        userinfo.password = bcrypt.hashSync(userinfo.password, 10)
+        const sqlInsert = 'insert into user set ?'
+        db.query(sqlInsert, {username: userinfo.username, password: userinfo.password}, (err, results) => {
+            if (err) return res.cc(err)
 
-            if(results.affectedRows!==1) return res.cc("注册用户失败，请稍后再试！")
+            if (results.affectedRows !== 1) return res.cc("注册用户失败，请稍后再试！")
 
-            res.cc('注册成功',0)
+            res.cc('注册成功', 0)
         })
 
 
@@ -30,9 +30,22 @@ exports.regUser = (req, res) => {
 }
 
 
-
-
-
 exports.login = (req, res) => {
-    res.send('login ok')
+    const userinfo = req.body
+
+    const sql = `select * from user where username=?`
+    db.query(sql, userinfo.username, (err, results) => {
+        if (err) return res.cc(err)
+        if (results.length !== 1) return res.cc('登录失败')
+        console.log(results[0])
+        const compareResult = bcrypt.compareSync(userinfo.password, results[0].password)
+        if (!compareResult) {
+            return res.cc('登录失败！')
+        }
+
+
+
+        res.send('login ok')
+    })
+
 }
