@@ -1,6 +1,8 @@
 const db = require('../db/index')
 const bcrypt = require('bcryptjs')
-
+const jwt = require('jsonwebtoken')
+const config = require('../config')
+const {token} = require("mysql/lib/protocol/Auth");
 
 exports.regUser = (req, res) => {
     const userinfo = req.body
@@ -37,15 +39,20 @@ exports.login = (req, res) => {
     db.query(sql, userinfo.username, (err, results) => {
         if (err) return res.cc(err)
         if (results.length !== 1) return res.cc('登录失败')
-        console.log(results[0])
         const compareResult = bcrypt.compareSync(userinfo.password, results[0].password)
         if (!compareResult) {
             return res.cc('登录失败！')
         }
 
+        const user =  {...results[0], password: '', user_pic: ''}
+        const tokenStr = jwt.sign(user, config.jwtSecretKey, {expiresIn: config.expiresIn})
+
+        res.send({status:0,
+        message:'登录成功',
+        token:'Bearer '+tokenStr
+        })
 
 
-        res.send('login ok')
     })
 
 }
