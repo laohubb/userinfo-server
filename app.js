@@ -26,7 +26,7 @@ const config = require('./config')
 const expressJWT = require('express-jwt')
 app.use(expressJWT({ secret: config.jwtSecretKey }).unless({ path: [/^\/api\//] }))
 app.use( (err, req, res, next) =>{
-    console.log(err)
+
     if (err.name === 'UnauthorizedError') return res.cc('身份认证失败！')
 })
 
