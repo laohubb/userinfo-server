@@ -6,7 +6,7 @@ const {token} = require("mysql/lib/protocol/Auth");
 
 exports.regUser = (req, res) => {
     const userinfo = req.body
-
+    console.log(req)
     const sqlStr = 'select * from user where username=?'
 
     db.query(sqlStr, userinfo.username, (err, results) => {
@@ -34,7 +34,7 @@ exports.regUser = (req, res) => {
 
 exports.login = (req, res) => {
     const userinfo = req.body
-
+    console.log(req)
     const sql = `select * from user where username=?`
     db.query(sql, userinfo.username, (err, results) => {
         if (err) return res.cc(err)

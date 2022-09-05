@@ -4,7 +4,6 @@ const bcrypt = require("bcryptjs");
 
 
 exports.getUserinfo=(req,res)=>{
-
     const sql = `select id, username, nickname, email, user_pic from user where id=?`
     db.query(sql,req.user.id,(err,results)=>{
         if(err) return res.cc(err)
@@ -22,12 +21,8 @@ exports.updateUserinfo=(req,res)=>{
     const sql = `update user set ? where id=?`
 
     db.query(sql, [req.body, req.user.id], (err, results) => {
-
         if (err) return res.cc(err)
-
         if (results.affectedRows !== 1) return res.cc('修改用户基本信息失败！')
-
-
         return res.cc('修改用户基本信息成功！', 0)
     })
 }

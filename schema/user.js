@@ -16,8 +16,7 @@ const email = joi.string().email().required()
 
 exports.update_userinfo_schema = {
     body: {
-        nickname,
-        email,
+        nickname
     },
 }
 
